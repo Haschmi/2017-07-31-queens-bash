@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="A crash course">
+	<meta name="generator" content="Hugo 0.25.1" />
+	
+	<title>Navigation and exploration &mdash; The bash Shell</title>
+	
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" type="image/x-icon"/>
+</head>
+
+	<body role="document">
+		<div class="document">
+			<div class="documentwrapper">
+				<div class="bodywrapper">
+					<div class="body" role="main">
+						
+	<h1>Navigation and exploration</h1>
+	
+	
+
+<h2 id="learning-objectives">Learning Objectives</h2>
+
+<ul>
+<li>Learn how to navigate around directories and look at their contents</li>
+<li>Explain the similarities and differences between a file and a directory.</li>
+<li>Translate an absolute path into a relative path and vice versa.</li>
+<li>Construct absolute and relative paths that identify specific files and directories.</li>
+<li>Explain the steps in the shell&rsquo;s read-run-print cycle.</li>
+<li>Identify the actual command, flags, and filenames in a command-line call.</li>
+<li>Demonstrate the use of tab completion, and explain its advantages.</li>
+</ul>
+
+<p>At the point in this lesson, we&rsquo;ve just logged into our shell. Nothing has happened yet, and we&rsquo;re not going to be able to do anything until we learn a few basic commands. By the end of this lesson, you will know how to &ldquo;move around&rdquo; the system and look at what&rsquo;s there.</p>
+
+<p>Right now, all we see is something that looks like this:</p>
+
+<pre><code class="language-bash">$
+</code></pre>
+
+<p>The dollar sign is a <strong>prompt</strong>, which shows us that the shell is waiting for input;
+your shell may use a different character as a prompt and may add information before
+the prompt. When typing commands, either from these lessons or from other sources,
+do not type the prompt, only the commands that follow it.</p>
+
+<p>Type the command <code>whoami</code>, then press the Enter key (sometimes marked Return) to send the command to the shell. The command&rsquo;s output is the ID of the current user, i.e., it shows us who the shell thinks we are:</p>
+
+<pre><code class="language-bash">$ whoami
+</code></pre>
+
+<pre><code class="language-output">hasch
+</code></pre>
+
+<p>More specifically, when we type <code>whoami</code> the shell:</p>
+
+<ol>
+<li>finds a program called <code>whoami</code>,</li>
+<li>runs that program,</li>
+<li>displays that program&rsquo;s output, then</li>
+<li>displays a new prompt to tell us that it&rsquo;s ready for more commands.</li>
+</ol>
+
+<p>Next,
+let&rsquo;s find out where we are by running a command called <code>pwd</code> (which stands for &ldquo;print working directory&rdquo;). At any moment, our <strong>current working directory</strong> (where we are) is the directory that the computer assumes we want to run commands in unless we explicitly specify something else.
+Here, the computer&rsquo;s response is <code>/global/home/hasch</code>, which is Hartmut&rsquo;s <strong>home directory</strong>:</p>
+
+<pre><code class="language-bash">$ pwd
+</code></pre>
+
+<pre><code class="language-output">/global/home/hasch
+</code></pre>
+
+<blockquote>
+<h2 id="home-directory">Home directory</h2>
+
+<p>The home directory path will look different on different operating systems.
+On Linux it will look like <code>/global/home/hasch</code>,
+and on Windows it will be similar to <code>C:\Documents and Settings\hasch</code>.
+Note that it may look slightly different for different versions of Windows.</p>
+</blockquote>
+
+<p>So, we know where we are. How do we look and see what&rsquo;s in our current directory?</p>
+
+<pre><code class="language-bash">ls
+</code></pre>
+
+<p><code>ls</code> prints the names of the files and directories in the current directory in alphabetical order, arranged neatly into columns.</p>
+
+<p>If nothing shows up, it means that nothing&rsquo;s there. Let&rsquo;s make a directory for us to play with.</p>
+
+<p><code>mkdir &lt;new directory name&gt;</code> makes a new directory with that name in your current location. Notice that this command required two pieces of input: the actual name of the command (<code>mkdir</code>) and an argument that specifies the name of the directory you wish to create.</p>
+
+<pre><code class="language-bash">mkdir Documents
+</code></pre>
+
+<p>Let&rsquo;s us <code>ls</code> again. What do we see?</p>
+
+<p>Our folder is there, awesome. What if we wanted to go inside it and do stuff there?</p>
+
+<p>We will use the <code>cd</code> (change directory) command to move around. Let&rsquo;s <code>cd</code> into our new Documents folder.</p>
+
+<pre><code class="language-bash">cd Documents
+pwd
+</code></pre>
+
+<pre><code class="language-output">~/Documents
+</code></pre>
+
+<p>Now that we know how to use <code>cd</code>, we can go anywhere. That&rsquo;s a lot of responsibility. What happens if we get &ldquo;lost&rdquo; and want to get back to where we started?</p>
+
+<p>To go back to your home directory, the following two commands will work:</p>
+
+<pre><code class="language-bash">cd /global/home/hasch
+cd ~
+cd $HOME
+</code></pre>
+
+<p>What is the <code>~</code> character? When using the shell, <code>~</code> is a shortcut that represents <code>/global/home/hasch</code>. $HOME is the value of an environment variable called HOME which serves the same purpose.</p>
+
+<p>A quick note on the structure of a UNIX (Linux/Mac/Android/Solaris/etc) filesystem. Directories and absolute paths (i.e. exact position in the system) are always prefixed with a <code>/</code>. <code>/</code> is the &ldquo;root&rdquo; or base directory.</p>
+
+<p>Let&rsquo;s go there now, look around, and then return to our home directory.</p>
+
+<pre><code class="language-bash">cd /
+ls
+cd ~
+</code></pre>
+
+<p>Our &ldquo;home&rdquo; directory is the one where we generally want to keep all of our files. Other folders on a UNIX OS contain system files, and get modified and changed as you install new software or upgrade your OS.</p>
+
+<blockquote>
+<h2 id="using-the-filesystem-at-a-computing-centre">Using the filesystem at a Computing Centre</h2>
+
+<p>If you are working on a computing centre such as the Centre for Advanced Computing, you usually have a number of places where you can store your files. These differ in both the amount of space allocated and whether or not they are backed up.</p>
+
+<p>For instance at the CAC, the default allocations are:<br />
+<strong>/home</strong> (your home directory) - 500 GB, backed up<br />
+<strong>/u1/work</strong> - 2 TB, backed up<br />
+<strong>/scratch</strong> - 5 TB, NOT backed up</p>
+</blockquote>
+
+<p>There are several other useful shortcuts you should be aware of.</p>
+
+<ul>
+<li><p><code>.</code> represents your current directory</p></li>
+
+<li><p><code>..</code> represents the &ldquo;parent&rdquo; directory of your current location</p></li>
+
+<li><p>While typing nearly <em>anything</em>, you can have bash try to autocomplete what you are typing by pressing the <code>tab</code> key.</p></li>
+</ul>
+
+<p>Let&rsquo;s try these out now:</p>
+
+<pre><code class="language-bash">cd ./Documents
+pwd
+
+cd ..
+pwd
+</code></pre>
+
+<p>Many commands also have multiple behaviors that you can invoke with command line &lsquo;flags.&rsquo; What is a flag? It&rsquo;s generally just your command followed by a &lsquo;-&rsquo; and the name of the flag (sometimes it&rsquo;s &lsquo;&ndash;&rsquo; followed by the name of the flag. You follow the flag(s) with any additional arguments you might need.</p>
+
+<p>We&rsquo;re going to demonstrate a couple of these &ldquo;flags&rdquo; using <code>ls</code>.</p>
+
+<p>Show hidden files with <code>-a</code>. Hidden files are files that begin with <code>.</code>, these files will not appear otherwise, but that doesn&rsquo;t mean they aren&rsquo;t there!</p>
+
+<pre><code class="language-bash">ls -a
+</code></pre>
+
+<p>Show files, their size in bytes, date last modified, permissions, and other things with <code>-l</code>.</p>
+
+<pre><code class="language-bash">ls -l
+</code></pre>
+
+<p>This is a lot of information to take in at once, but we will explain this later! <code>ls -l</code> is <em>extremely</em> useful, and tells you almost everything you need to know about your files without actually looking at them.</p>
+
+<p>We can also use multiple flags at the same time!</p>
+
+<pre><code class="language-bash">ls -l -a
+</code></pre>
+
+<p>Flags generally precede any arguments passed to a UNIX command. <code>ls</code> actually takes an extra argument that specifies a directory to look into.</p>
+
+<p>When you use flags and arguments together, they syntax (how it&rsquo;s supposed to be typed) generally looks something like this:</p>
+
+<pre><code class="language-bash">command &lt;flags/options&gt; &lt;arguments&gt;
+</code></pre>
+
+<p>So using <code>ls -l</code> on a different directory than the one we&rsquo;re in would look something like:</p>
+
+<pre><code class="language-bash">ls -l ~/Documents
+</code></pre>
+
+<p>How did I know about the <code>-l</code> and <code>-a</code> options? Is there a manual we can look at for help when we need help?</p>
+
+<p>There is, in fact, a very helpful manual for most UNIX commands: <code>man</code> (if you&rsquo;ve ever heard of a &ldquo;man page&rdquo; for something, this is what it is).</p>
+
+<pre><code class="language-bash">man ls
+</code></pre>
+
+<p>You can scroll through this manual using the arrow keys. To close the manual, press the <code>q</code> to exit.</p>
+
+
+
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+	<div class="sphinxsidebarwrapper">
+		<p class="logo">
+			<a href="https://haschmi.github.io/2017-07-31-queens-bash/">
+				<img class="logo" src="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" alt="Logo"/>
+				<h1 class="logo logo-name">The bash Shell</h1>
+			</a>
+		</p>
+		
+		<p class="blurb">A crash course</p>
+
+		
+
+	
+
+	
+
+	
+		
+
+		
+
+<h3>Navigation</h3>
+<ul>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/intro/">Introduction</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/navigation/">Navigation and exploration</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/files/">Handling files</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/piping/">Redirection and piping</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/scripts/">Scripts</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/remote/">Using remote systems</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/reference/">Quick Summary</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/">The bash Shell (main page)</a>
+	</li>
+	
+</ul>
+
+
+		<h3>Related Topics</h3>
+<ul>
+  <li><a href="https://haschmi.github.io/2017-07-31-queens-bash/">Documentation overview</a><ul>
+  
+  
+</ul>
+
+	</div>
+</div>
+<div class="clearer"></div>
+</div>
+			<div class="footer">
+	&copy; 2017 Hartmut Schmider / Jeff Stafford / Software Carpentry
+	|
+	Powered by <a href="http://gohugo.io/">Hugo 0.25.1</a>
+	&amp; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+	
+</div>
+
+
+
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

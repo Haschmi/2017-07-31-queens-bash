@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="A crash course">
+	<meta name="generator" content="Hugo 0.25.1" />
+	
+	<title>Quick Summary &mdash; The bash Shell</title>
+	
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" type="image/x-icon"/>
+</head>
+
+	<body role="document">
+		<div class="document">
+			<div class="documentwrapper">
+				<div class="bodywrapper">
+					<div class="body" role="main">
+						
+	<h1>Quick Summary</h1>
+	
+	
+
+<h2 id="introducing-the-shell-intro"><a href="intro">Introducing the Shell</a></h2>
+
+<ul>
+<li>A shell is a program whose primary purpose is to read commands and run other programs.</li>
+<li>The shell&rsquo;s main advantages are its high action-to-keystroke ratio,
+its support for automating repetitive tasks,
+and that it can be used to access networked machines.</li>
+<li>The shell&rsquo;s main disadvantages are its primarily textual nature
+and how cryptic its commands and operation can be.</li>
+</ul>
+
+<h2 id="files-and-directories-navigation"><a href="navigation">Files and Directories</a></h2>
+
+<ul>
+<li>The file system is responsible for managing information on the disk.</li>
+<li>Information is stored in files, which are stored in directories (folders).</li>
+<li>Directories can also store other directories, which forms a directory tree.</li>
+<li><code>cd path</code> changes the current working directory.</li>
+<li><code>ls path</code> prints a listing of a specific file or directory;
+<code>ls</code> on its own lists the current working directory.</li>
+<li><code>pwd</code> prints the user&rsquo;s current working directory.</li>
+<li><code>whoami</code> shows the user&rsquo;s current identity.</li>
+<li><code>/</code> on its own is the root directory of the whole file system.</li>
+<li>A relative path specifies a location starting from the current location.</li>
+<li>An absolute path specifies a location from the root of the file system.</li>
+<li>Directory names in a path are separated with &lsquo;/&rsquo; on Unix, but &lsquo;\&rsquo; on Windows.</li>
+<li>&rsquo;..&rsquo; means &ldquo;the directory above the current one&rdquo;;
+&lsquo;.&rsquo; on its own means &ldquo;the current directory&rdquo;.</li>
+<li>Most files&rsquo; names are <code>something.extension</code>.
+The extension isn&rsquo;t required,
+and doesn&rsquo;t guarantee anything,
+but is normally used to indicate the type of data in the file.</li>
+<li>Most commands take options (flags) which begin with a &lsquo;-&rsquo;.</li>
+</ul>
+
+<h2 id="creating-things-files"><a href="files">Creating Things</a></h2>
+
+<ul>
+<li><code>cp old new</code> copies a file.</li>
+<li><code>mkdir path</code> creates a new directory.</li>
+<li><code>mv old new</code> moves (renames) a file or directory.</li>
+<li><code>rm path</code> removes (deletes) a file.</li>
+<li><code>rmdir path</code> removes (deletes) an empty directory.</li>
+<li>Unix documentation uses &lsquo;^A&rsquo; to mean &ldquo;control-A&rdquo;.</li>
+<li>The shell does not have a trash bin: once something is deleted, it&rsquo;s really gone.</li>
+<li>Nano is a very simple text editor &mdash; please use something else for real work.</li>
+</ul>
+
+<h2 id="pipes-and-filters-piping"><a href="piping">Pipes and Filters</a></h2>
+
+<ul>
+<li><code>cat</code> displays the contents of its inputs.</li>
+<li><code>head</code> displays the first few lines of its input.</li>
+<li><code>tail</code> displays the last few lines of its input.</li>
+<li><code>sort</code> sorts its inputs.</li>
+<li><code>wc</code> counts lines, words, and characters in its inputs.</li>
+<li><code>command &gt; file</code> redirects a command&rsquo;s output to a file.</li>
+<li><code>first | second</code> is a pipeline: the output of the first command is used as the input to the second.</li>
+<li>The best way to use the shell is to use pipes to combine simple single-purpose programs (filters).</li>
+</ul>
+
+<h2 id="loops-and-scripts-scripts"><a href="scripts">Loops and scripts</a></h2>
+
+<ul>
+<li>A <code>for</code> loop repeats commands once for every thing in a list.</li>
+<li>Every <code>for</code> loop needs a variable to refer to the current &ldquo;thing&rdquo;.</li>
+<li>Use <code>$name</code> to expand a variable (i.e., get its value).</li>
+<li>Do not use spaces, quotes, or wildcard characters such as &lsquo;*&rsquo; or &lsquo;?&rsquo; in filenames, as it complicates variable expansion.</li>
+<li>Give files consistent names that are easy to match with wildcard patterns to make it easy to select them for looping.</li>
+<li>Use the up-arrow key to scroll up through previous commands to edit and repeat them.</li>
+<li>Use &ldquo;control-r&rdquo; to search through the previously entered commands.</li>
+<li>Use <code>history</code> to display recent commands, and <code>!number</code> to repeat a command by number.</li>
+<li>Save commands in files (usually called shell scripts) for re-use.</li>
+<li><code>bash filename</code> runs the commands saved in a file.</li>
+<li><code>$*</code> refers to all of a shell script&rsquo;s command-line parameters.</li>
+<li><code>$1</code>, <code>$2</code>, etc., refer to specified command-line parameters.</li>
+<li>Place variables in quotes if the values might have spaces in them.</li>
+<li>Letting users decide what files to process is more flexible and more consistent with built-in Unix commands.</li>
+</ul>
+
+<h2 id="finding-things">Finding Things</h2>
+
+<ul>
+<li><code>find</code> finds files with specific properties that match patterns.</li>
+<li><code>grep</code> selects lines in files that match patterns.</li>
+<li><code>man command</code> displays the manual page for a given command.</li>
+<li><code>*</code> matches zero or more characters in a filename, so <code>*.txt</code> matches all files ending in <code>.txt</code>.</li>
+<li><code>?</code> matches any single character in a filename, so <code>?.txt</code> matches <code>a.txt</code> but not <code>any.txt</code>.</li>
+<li><code>$(command)</code> inserts a command&rsquo;s output in place.</li>
+</ul>
+
+<h2 id="glossary">Glossary</h2>
+
+<dl>
+<dt>absolute path</dt>
+<dd>A <a href="#path">path</a> that refers to a particular location in a file system.
+Absolute paths are usually written with respect to the file system&rsquo;s
+<a href="#root-directory">root directory</a>,
+and begin with either &ldquo;/&rdquo; (on Unix) or &ldquo;\&rdquo; (on Microsoft Windows).
+See also: <a href="#relative-path">relative path</a>.</dd>
+<dt>argument</dt>
+<dd>A value given to a function or program when it runs.
+The term is often used interchangeably (and inconsistently) with <a href="#parameter">parameter</a>.</dd>
+<dt>command shell</dt>
+<dd>See <a href="#shell">shell</a></dd>
+<dt>command-line interface</dt>
+<dd>An interface based on typing commands,
+usually at a <a href="#read-evaluate-print-loop">REPL</a>.
+See also: <a href="#graphical-user-interface">graphical user interface</a>.</dd>
+<dt>comment</dt>
+<dd>A remark in a program that is intended to help human readers understand what is going on,
+but is ignored by the computer.
+Comments in Python, R, and the Unix shell start with a <code>#</code> character and run to the end of the line;
+comments in SQL start with <code>--</code>,
+and other languages have other conventions.</dd>
+<dt>current working directory</dt>
+<dd>The directory that <a href="#relative-path">relative paths</a> are calculated from;
+equivalently,
+the place where files referenced by name only are searched for.
+Every <a href="#process">process</a> has a current working directory.
+The current working directory is usually referred to using the shorthand notation <code>.</code> (pronounced &ldquo;dot&rdquo;).</dd>
+<dt>file system</dt>
+<dd>A set of files, directories, and I/O devices (such as keyboards and screens).
+A file system may be spread across many physical devices,
+or many file systems may be stored on a single physical device;
+the <a href="#operating-system">operating system</a> manages access.</dd>
+<dt>filename extension</dt>
+<dd>The portion of a file&rsquo;s name that comes after the final &ldquo;.&rdquo; character.
+By convention this identifies the file&rsquo;s type:
+<code>.txt</code> means &ldquo;text file&rdquo;, <code>.png</code> means &ldquo;Portable Network Graphics file&rdquo;,
+and so on. These conventions are not enforced by most operating systems:
+it is perfectly possible to name an MP3 sound file <code>homepage.html</code>.
+Since many applications use filename extensions to identify the <a href="#mime-type">MIME type</a> of the file,
+misnaming files may cause those applications to fail.</dd>
+<dt>filter</dt>
+<dd>A program that transforms a stream of data.
+Many Unix command-line tools are written as filters:
+they read data from <a href="#standard-input">standard input</a>,
+process it, and write the result to <a href="#standard-output">standard output</a>.</dd>
+<dt>flag</dt>
+<dd>A terse way to specify an option or setting to a command-line program.
+By convention Unix applications use a dash followed by a single letter,
+such as <code>-v</code>, or two dashes followed by a word, such as <code>--verbose</code>,
+while DOS applications use a slash, such as <code>/V</code>.
+Depending on the application, a flag may be followed by a single argument, as in <code>-o /tmp/output.txt</code>.</dd>
+<dt>for loop</dt>
+<dd>A loop that is executed once for each value in some kind of set, list, or range.
+See also: <a href="#while-loop">while loop</a>.</dd>
+<dt>graphical user interface</dt>
+<dd>A graphical user interface,
+usually controlled by using a mouse.
+See also: <a href="#command-line-interface">command-line interface</a>.</dd>
+<dt>home directory</dt>
+<dd>The default directory associated with an account on a computer system.
+By convention, all of a user&rsquo;s files are stored in or below her home directory.</dd>
+<dt>loop</dt>
+<dd>A set of instructions to be executed multiple times. Consists of a <a href="#loop-body">loop body</a> and (usually) a
+condition for exiting the loop. See also <a href="#for-loop">for loop</a> and <a href="#while-loop">while loop</a>.</dd>
+<dt>loop body</dt>
+<dd>The set of statements or commands that are repeated inside a <a href="#for-loop">for loop</a>
+or <a href="#while-loop">while loop</a>.</dd>
+<dt>MIME type</dt>
+<dd>MIME (Multi-Purpose Internet Mail Extensions) types describe different file types for exchange on the Internet,
+for example images, audio, and documents.</dd>
+<dt>operating system</dt>
+<dd>Software that manages interactions between users, hardware, and software <a href="#process">processes</a>. Common
+examples are Linux, OS X, and Windows.</dd>
+<dt>orthogonal</dt>
+<dd>To have meanings or behaviors that are independent of each other.
+If a set of concepts or tools are orthogonal,
+they can be combined in any way.</dd>
+<dt>parameter</dt>
+<dd>A variable named in the function&rsquo;s declaration that is used to hold a value passed into the call.
+The term is often used interchangeably (and inconsistently) with <a href="#argument">argument</a>.</dd>
+<dt>parent directory</dt>
+<dd>The directory that &ldquo;contains&rdquo; the one in question.
+Every directory in a file system except the <a href="#root-directory">root directory</a> has a parent.
+A directory&rsquo;s parent is usually referred to using the shorthand notation <code>..</code> (pronounced &ldquo;dot dot&rdquo;).</dd>
+<dt>path</dt>
+<dd>A description that specifies the location of a file or directory within a <a href="#file-system">file system</a>.
+See also: <a href="#absolute-path">absolute path</a>, <a href="#relative-path">relative path</a>.</dd>
+<dt>pipe</dt>
+<dd>A connection from the output of one program to the input of another.
+When two or more programs are connected in this way, they are called a &ldquo;pipeline&rdquo;.</dd>
+<dt>process</dt>
+<dd>A running instance of a program, containing code, variable values,
+open files and network connections, and so on.
+Processes are the &ldquo;actors&rdquo; that the <a href="#operating-system">operating system</a> manages;
+it typically runs each process for a few milliseconds at a time
+to give the impression that they are executing simultaneously.</dd>
+<dt>prompt</dt>
+<dd>A character or characters display by a <a href="#read-evaluate-print-loop">REPL</a> to show that
+it is waiting for its next command.</dd>
+<dt>quoting</dt>
+<dd>(in the shell):
+Using quotation marks of various kinds to prevent the shell from interpreting special characters.
+For example, to pass the string <code>*.txt</code> to a program,
+it is usually necessary to write it as <code>'*.txt'</code> (with single quotes)
+so that the shell will not try to expand the <code>*</code> wildcard.</dd>
+<dt>read-evaluate-print loop</dt>
+<dd>(REPL): A <a href="#command-line-interface">command-line interface</a> that reads a command from the user,
+executes it, prints the result, and waits for another command.</dd>
+<dt>redirect</dt>
+<dd>To send a command&rsquo;s output to a file rather than to the screen or another command,
+or equivalently to read a command&rsquo;s input from a file.</dd>
+<dt>regular expression</dt>
+<dd>A pattern that specifies a set of character strings.
+REs are most often used to find sequences of characters in strings.</dd>
+<dt>relative path</dt>
+<dd>A <a href="#path">path</a> that specifies the location of a file or directory
+with respect to the <a href="#current-working-directory">current working directory</a>.
+Any path that does not begin with a separator character (&ldquo;/&rdquo; or &ldquo;\&rdquo;) is a relative path.
+See also: <a href="#absolute-path">absolute path</a>.</dd>
+<dt>root directory</dt>
+<dd>The top-most directory in a <a href="#file-system">file system</a>.
+Its name is &ldquo;/&rdquo; on Unix (including Linux and Mac OS X) and &ldquo;\&rdquo; on Microsoft Windows.</dd>
+<dt>shell</dt>
+<dd>A <a href="#cli">command-line interface</a> such as Bash (the Bourne-Again Shell)
+or the Microsoft Windows DOS shell
+that allows a user to interact with the <a href="#operating-system">operating system</a>.</dd>
+<dt>shell script</dt>
+<dd>A set of <a href="#shell">shell</a> commands stored in a file for re-use.
+A shell script is a program executed by the shell;
+the name &ldquo;script&rdquo; is used for historical reasons.</dd>
+<dt>standard input</dt>
+<dd>A process&rsquo;s default input stream.
+In interactive command-line applications,
+it is typically connected to the keyboard;
+in a <a href="#pipe">pipe</a>,
+it receives data from the <a href="#standard-output">standard output</a> of the preceding process.</dd>
+<dt>standard output</dt>
+<dd>A process&rsquo;s default output stream.
+In interactive command-line applications,
+data sent to standard output is displayed on the screen;
+in a <a href="#pipe">pipe</a>,
+it is passed to the <a href="#standard-input">standard input</a> of the next process.</dd>
+<dt>sub-directory</dt>
+<dd>A directory contained within another directory.</dd>
+<dt>tab completion</dt>
+<dd>A feature provided by many interactive systems in which
+pressing the Tab key triggers automatic completion of the current word or command.</dd>
+<dt>variable</dt>
+<dd>A name in a program that is associated with a value or a collection of values.</dd>
+<dt>while loop</dt>
+<dd>A loop that keeps executing as long as some condition is true.
+See also: <a href="#for-loop">for loop</a>.</dd>
+<dt>wildcard</dt>
+<dd>A character used in pattern matching.
+In the Unix shell,
+the wildcard <code>*</code> matches zero or more characters,
+so that <code>*.txt</code> matches all files whose names end in <code>.txt</code>.</dd>
+</dl>
+
+
+
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+	<div class="sphinxsidebarwrapper">
+		<p class="logo">
+			<a href="https://haschmi.github.io/2017-07-31-queens-bash/">
+				<img class="logo" src="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" alt="Logo"/>
+				<h1 class="logo logo-name">The bash Shell</h1>
+			</a>
+		</p>
+		
+		<p class="blurb">A crash course</p>
+
+		
+
+	
+
+	
+
+	
+		
+
+		
+
+<h3>Navigation</h3>
+<ul>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/intro/">Introduction</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/navigation/">Navigation and exploration</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/files/">Handling files</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/piping/">Redirection and piping</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/scripts/">Scripts</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/remote/">Using remote systems</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/reference/">Quick Summary</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/">The bash Shell (main page)</a>
+	</li>
+	
+</ul>
+
+
+		<h3>Related Topics</h3>
+<ul>
+  <li><a href="https://haschmi.github.io/2017-07-31-queens-bash/">Documentation overview</a><ul>
+  
+  
+</ul>
+
+	</div>
+</div>
+<div class="clearer"></div>
+</div>
+			<div class="footer">
+	&copy; 2017 Hartmut Schmider / Jeff Stafford / Software Carpentry
+	|
+	Powered by <a href="http://gohugo.io/">Hugo 0.25.1</a>
+	&amp; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+	
+</div>
+
+
+
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

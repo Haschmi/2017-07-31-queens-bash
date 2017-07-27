@@ -1,0 +1,38 @@
+baseurl = "https://haschmi.github.io/2017-07-31-queens-bash/"
+languageCode = "en-us"
+metadataformat = "yaml"
+title = "The bash Shell"
+theme = "hugo-alabaster-theme"
+publishDir = "docs/"
+
+disqusShortname = ""
+googleAnalytics = ""
+
+[params]
+	name = "The bash Shell"
+	description = "A crash course"
+
+	github_user   = "digitalcraftsman"
+	github_repo   = "hugo-alabaster-theme"
+	github_banner = false
+
+	custom_css = []
+	custom_js  = []
+
+	highlightjs = "css/highlight.css"
+	favicon = "favicon.ico"
+
+[params.sidebar]
+	logo = "favicon.ico"
+
+
+	github_button  = false
+	travis_button  = false
+	codecov_button = false
+	gratipay = ""
+
+	show_relations = true
+
+[params.footer]
+	copyright = "Hartmut Schmider / Jeff Stafford / Software Carpentry"
+	show_powered_by = true

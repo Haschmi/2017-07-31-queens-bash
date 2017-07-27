@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/intro/</loc>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/navigation/</loc>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/files/</loc>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/piping/</loc>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/scripts/</loc>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/remote/</loc>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/reference/</loc>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/</loc>
+    <lastmod>2016-04-23T15:21:22+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://haschmi.github.io/2017-07-31-queens-bash/</loc>
+    <lastmod>2016-04-23T15:21:22+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

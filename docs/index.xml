@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>The bash Shell</title>
+    <link>https://haschmi.github.io/2017-07-31-queens-bash/</link>
+    <description>Recent content on The bash Shell</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 23 Apr 2016 15:21:22 +0200</lastBuildDate>
+    
+	<atom:link href="https://haschmi.github.io/2017-07-31-queens-bash/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Introduction</title>
+      <link>https://haschmi.github.io/2017-07-31-queens-bash/intro/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://haschmi.github.io/2017-07-31-queens-bash/intro/</guid>
+      <description>Learning Objectives  Explain how the shell relates to the keyboard, the screen, the operating system, and users&amp;rsquo; programs. Explain when and why command-line interfaces should be used instead of graphical interfaces.  At a high level, computers do four things:
+ run programs store data communicate with each other interact with us  Until very recently, the only way to interact with a computer was by typing input and receiving printed text output.</description>
+    </item>
+    
+    <item>
+      <title>Navigation and exploration</title>
+      <link>https://haschmi.github.io/2017-07-31-queens-bash/navigation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://haschmi.github.io/2017-07-31-queens-bash/navigation/</guid>
+      <description>Learning Objectives  Learn how to navigate around directories and look at their contents Explain the similarities and differences between a file and a directory. Translate an absolute path into a relative path and vice versa. Construct absolute and relative paths that identify specific files and directories. Explain the steps in the shell&amp;rsquo;s read-run-print cycle. Identify the actual command, flags, and filenames in a command-line call. Demonstrate the use of tab completion, and explain its advantages.</description>
+    </item>
+    
+    <item>
+      <title>Handling files</title>
+      <link>https://haschmi.github.io/2017-07-31-queens-bash/files/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://haschmi.github.io/2017-07-31-queens-bash/files/</guid>
+      <description>Now that we know how to move around and look at things, let&amp;rsquo;s learn how to read, write, and handle files!
+cd ~  What if we want to make a file? There are a few ways of doing this, the easiest of which is simply using a text editor. For this lesson, we are going to us nano, since it&amp;rsquo;s super easy to use.
+To use nano on a file, simply type nano &amp;lt;filename&amp;gt;.</description>
+    </item>
+    
+    <item>
+      <title>Redirection and piping</title>
+      <link>https://haschmi.github.io/2017-07-31-queens-bash/piping/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://haschmi.github.io/2017-07-31-queens-bash/piping/</guid>
+      <description>Learning Objectives  Redirect a command&amp;rsquo;s output to a file. Process a file instead of keyboard input using redirection. Construct command pipelines with two or more stages. Explain what usually happens if a program or pipeline isn&amp;rsquo;t given any input to process.   Now that we know most of the basic UNIX commands, we are going to explore some more advanced features. The first of these features is the wildcard *.</description>
+    </item>
+    
+    <item>
+      <title>Scripts</title>
+      <link>https://haschmi.github.io/2017-07-31-queens-bash/scripts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://haschmi.github.io/2017-07-31-queens-bash/scripts/</guid>
+      <description>Learning Objectives  Learn what a script is Write simple shell scripts Understand and manipulate UNIX permissions What is a comment? Understand shell variables and how to use them Write a simple for loop  We now know a whole bunch of UNIX commands. Wouldn&amp;rsquo;t it be great if we could save certain commands so that we could run them later or not have to type them out again? As it turns out, this is extremely easy to do.</description>
+    </item>
+    
+    <item>
+      <title>Using remote systems</title>
+      <link>https://haschmi.github.io/2017-07-31-queens-bash/remote/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://haschmi.github.io/2017-07-31-queens-bash/remote/</guid>
+      <description>Learning Objectives  Learn how to set up a shell script for job submission Learn how to select a cluster to run software on What is $PATH? Submit a simple job to the scheduler Learn how to transfer files to and from your computer with sftp  At this point, we have learned all of the basics of using the shell. These skills will get you far on a normal UNIX system like OSX and most flavors of Linux.</description>
+    </item>
+    
+    <item>
+      <title>Quick Summary</title>
+      <link>https://haschmi.github.io/2017-07-31-queens-bash/reference/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://haschmi.github.io/2017-07-31-queens-bash/reference/</guid>
+      <description>Introducing the Shell  A shell is a program whose primary purpose is to read commands and run other programs. The shell&amp;rsquo;s main advantages are its high action-to-keystroke ratio, its support for automating repetitive tasks, and that it can be used to access networked machines. The shell&amp;rsquo;s main disadvantages are its primarily textual nature and how cryptic its commands and operation can be.  Files and Directories  The file system is responsible for managing information on the disk.</description>
+    </item>
+    
+    <item>
+      <title>The bash Shell (main page)</title>
+      <link>https://haschmi.github.io/2017-07-31-queens-bash/</link>
+      <pubDate>Sat, 23 Apr 2016 15:21:22 +0200</pubDate>
+      
+      <guid>https://haschmi.github.io/2017-07-31-queens-bash/</guid>
+      <description>What is the bash Shell? The Unix bash shell has been around longer than most of its users have been alive. It has survived so long because it&amp;rsquo;s a power tool that allows people to do complex things with just a few keystrokes. More importantly, it helps them combine existing programs in new ways and automate repetitive tasks so that they don&amp;rsquo;t have to type the same things over and over again.</description>
+    </item>
+    
+  </channel>
+</rss>

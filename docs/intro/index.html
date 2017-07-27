@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="A crash course">
+	<meta name="generator" content="Hugo 0.25.1" />
+	
+	<title>Introduction &mdash; The bash Shell</title>
+	
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" type="image/x-icon"/>
+</head>
+
+	<body role="document">
+		<div class="document">
+			<div class="documentwrapper">
+				<div class="bodywrapper">
+					<div class="body" role="main">
+						
+	<h1>Introduction</h1>
+	
+	
+
+<h2 id="learning-objectives">Learning Objectives</h2>
+
+<ul>
+<li>Explain how the shell relates to the keyboard, the screen, the operating system, and users&rsquo; programs.</li>
+<li>Explain when and why command-line interfaces should be used instead of graphical interfaces.</li>
+</ul>
+
+<p>At a high level, computers do four things:</p>
+
+<ul>
+<li>run programs</li>
+<li>store data</li>
+<li>communicate with each other</li>
+<li>interact with us</li>
+</ul>
+
+<p>Until very recently, the only way to interact with a computer was by typing input and receiving printed text output. This kind of interface is called a
+<strong>command-line interface</strong>, or CLI, to distinguish it from a
+<strong>graphical user interface</strong>, or GUI, which most people now use.
+The heart of a CLI is a <strong>read-evaluate-print loop</strong>, or REPL:
+when the user types a command and then presses the enter (or return) key,
+the computer reads it,
+executes it,
+and prints its output.
+The user then types another command,
+and so on until the user logs off.</p>
+
+<p>This description makes it sound as though the user sends commands directly to the computer,
+and the computer sends output directly to the user.
+In fact,
+there is usually a program in between called a
+<strong>command shell</strong>.
+What the user types goes into the shell,
+which then figures out what commands to run and orders the computer to execute them. Note, the shell is called <em>the shell</em> because it encloses the operating system in order to hide some of its complexity and make it simpler to interact with.</p>
+
+<p>A shell is a program like any other. What&rsquo;s special about it is that its job is to run other programs rather than to do calculations itself. The most popular Unix shell is <strong>bash</strong>,
+the <strong>B</strong>ourne <strong>a</strong>gain <strong>sh</strong>ell (so-called because it&rsquo;s derived from a shell written by Stephen Bourne &mdash; this is what passes for wit among programmers). Bash is the default shell on most modern implementations of Unix and in most packages that provide Unix-like tools for Windows.</p>
+
+<p>Using Bash or any other shell sometimes feels more like programming than like using a mouse. Commands are terse (often only a couple of characters long), their names are frequently cryptic,
+and their output is lines of text rather than something visual like a graph.
+On the other hand, the shell allows us to combine existing tools in powerful ways with only a few keystrokes and to set up pipelines to handle large volumes of data automatically.
+In addition, the command line is often the easiest way to interact with remote machines and supercomputers.
+Familiarity with the shell is near essential to run a variety of specialized tools and resources including high-performance computing systems. As clusters and cloud computing systems become more popular for scientific data crunching, being able to interact with them is becoming a necessary skill. We can build on the command-line skills covered here to tackle a wide range of scientific questions and computational challenges.</p>
+
+
+
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+	<div class="sphinxsidebarwrapper">
+		<p class="logo">
+			<a href="https://haschmi.github.io/2017-07-31-queens-bash/">
+				<img class="logo" src="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" alt="Logo"/>
+				<h1 class="logo logo-name">The bash Shell</h1>
+			</a>
+		</p>
+		
+		<p class="blurb">A crash course</p>
+
+		
+
+	
+
+	
+
+	
+		
+
+		
+
+<h3>Navigation</h3>
+<ul>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/intro/">Introduction</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/navigation/">Navigation and exploration</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/files/">Handling files</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/piping/">Redirection and piping</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/scripts/">Scripts</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/remote/">Using remote systems</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/reference/">Quick Summary</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/">The bash Shell (main page)</a>
+	</li>
+	
+</ul>
+
+
+		<h3>Related Topics</h3>
+<ul>
+  <li><a href="https://haschmi.github.io/2017-07-31-queens-bash/">Documentation overview</a><ul>
+  
+  
+</ul>
+
+	</div>
+</div>
+<div class="clearer"></div>
+</div>
+			<div class="footer">
+	&copy; 2017 Hartmut Schmider / Jeff Stafford / Software Carpentry
+	|
+	Powered by <a href="http://gohugo.io/">Hugo 0.25.1</a>
+	&amp; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+	
+</div>
+
+
+
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

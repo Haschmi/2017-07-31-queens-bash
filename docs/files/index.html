@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="A crash course">
+	<meta name="generator" content="Hugo 0.25.1" />
+	
+	<title>Handling files &mdash; The bash Shell</title>
+	
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" type="image/x-icon"/>
+</head>
+
+	<body role="document">
+		<div class="document">
+			<div class="documentwrapper">
+				<div class="bodywrapper">
+					<div class="body" role="main">
+						
+	<h1>Handling files</h1>
+	
+	
+
+<p>Now that we know how to move around and look at things, let&rsquo;s learn how to read, write, and handle files!</p>
+
+<pre><code class="language-bash">cd ~
+</code></pre>
+
+<p>What if we want to make a file? There are a few ways of doing this, the easiest of which is simply using a text editor. For this lesson, we are going to us <code>nano</code>, since it&rsquo;s super easy to use.</p>
+
+<p>To use <code>nano</code> on a file, simply type <code>nano &lt;filename&gt;</code>. If the file does not exist, it will be created. <code>^O</code> (ctrl + O) saves the file, and <code>^X</code> quits. If you have not saved your file upon trying to quit, it will ask you if you want to save.</p>
+
+<blockquote>
+<h2 id="using-vi-as-a-text-editor">Using <code>vi</code> as a text editor</h2>
+
+<p>Although <code>vi</code> isn&rsquo;t the easiest or most user-friendly of text editors, you&rsquo;ll be able to find it on any system and it will take you far.</p>
+
+<p>A few things about using <code>vi</code> before we start. There are couple modes, a command mode (for doing big operations) and an &ldquo;insert&rdquo; mode. You can switch to insert mode with the <code>i</code> key, and command mode with <code>Esc</code>.</p>
+
+<p>In insert mode, you can type more or less normally. In command mode there are a few commands you should be aware of:
+<code>:q!</code> - quit, without saving
+<code>:wq</code> - save and quit
+<code>dd</code> - cut/delete a line
+<code>y</code> - paste a line</p>
+</blockquote>
+
+<p>Let&rsquo;s make a new file now, type whatever you want in it, and save it.</p>
+
+<pre><code class="language-bash">nano test.txt
+</code></pre>
+
+<p>Do a quick check to confirm our file was created.</p>
+
+<pre><code class="language-bash">ls
+</code></pre>
+
+<pre><code class="language-output">test.txt
+</code></pre>
+
+<p>Let&rsquo;s read our file now. There are a few different ways of doing this, the simplest of which is simply reading the entire file with <code>cat</code>.</p>
+
+<pre><code class="language-bash">cat test.txt
+</code></pre>
+
+<pre><code class="language-output">This is the contents of our test file.
+</code></pre>
+
+<p>Although <code>cat</code> may not seem like an intuitive command with which to open files, it stands for &ldquo;concatenate&rdquo;- giving it multiple arguments will print out one file followed by the contents of the next, and so on.</p>
+
+<pre><code class="language-bash">cat test.txt test.txt
+</code></pre>
+
+<pre><code class="language-output">This is the contents of our test file.
+This is the contents of our test file.
+</code></pre>
+
+<p>We&rsquo;ve successfully created a file. What about a directory? We&rsquo;ve actually done this before, using <code>mkdir</code>.</p>
+
+<pre><code class="language-bash">mkdir files
+ls
+</code></pre>
+
+<h2 id="moving-and-copying-files">Moving and copying files</h2>
+
+<p>To practice moving files, we will move <code>test.txt</code> to that directory with <code>mv</code> (move). <code>mv</code>&rsquo;s syntax is relatively simple, and works for both files and directories <code>mv &lt;file/directory&gt; &lt;path to new location&gt;</code></p>
+
+<pre><code class="language-bash">mv test.txt files
+cd files
+ls
+</code></pre>
+
+<pre><code class="language-output">test.txt
+</code></pre>
+
+<p><code>test.txt</code> isn&rsquo;t a very descriptive name. How do we go about changing it?</p>
+
+<p>It turns out that the way to rename files and folders is with <code>mv</code> again. Although this may not seem intuitive at first, think of it as moving a file to be stored under a different name. The syntax is quite similar to moving files: <code>mv &lt;oldName&gt; &lt;newName&gt;</code>.</p>
+
+<pre><code class="language-bash">mv test.txt newname.testfile
+ls
+</code></pre>
+
+<pre><code class="language-output">newname.testfile
+</code></pre>
+
+<blockquote>
+<h2 id="file-extensions-are-arbitrary">File extensions are arbitrary</h2>
+
+<p>In the last example, we changed both a file&rsquo;s name and extension at the same time. On UNIX systems, file extensions (like .txt) are arbitrary. A file is a .txt file only because we say it is. Changing the name or extension of the file will <em>never</em> change a file&rsquo;s contents, so you are free to rename things as you wish.</p>
+</blockquote>
+
+<p>What if we want to copy a file, instead of simply renaming or moving it? Use <code>cp</code>. This command has to different uses that work in the same way as <code>mv</code>:</p>
+
+<ul>
+<li><p>Copy to same directory (new name): <code>cp &lt;file&gt; &lt;newFilename&gt;</code></p></li>
+
+<li><p>Copy to other directory (same name): <code>cp &lt;file&gt; &lt;directory&gt;</code></p></li>
+</ul>
+
+<p>Let&rsquo;s try this out.</p>
+
+<pre><code class="language-bash">cp newname.testfile copy.testfile
+ls
+cp newname.testfile ..
+cd ..
+ls
+</code></pre>
+
+<pre><code class="language-output">newname.testfile copy.testfile
+files Documents newname.testfile
+</code></pre>
+
+<h2 id="removing-files">Removing files</h2>
+
+<p>We&rsquo;ve begun to clutter up our workspace with all of the directories and stuff we&rsquo;ve been making. Let&rsquo;s learn how to get rid of them. One important note before we start&hellip; when you delete a file on UNIX systems, they are gone <strong>forever</strong>. There is no &ldquo;recycle bin&rdquo; or &ldquo;trash&rdquo;. Once a file is deleted, it is gone, never to return. So be <em>very</em> careful when deleting files.</p>
+
+<p>Files are deleted with <code>rm &lt;file&gt; [moreFiles]</code>. To delete the <code>newname.testfile</code> in our current directory:</p>
+
+<pre><code class="language-bash">ls
+rm newname.testfile
+ls
+</code></pre>
+
+<pre><code class="language-output">files Documents newname.testfile
+files Documents
+</code></pre>
+
+<p>That was simple enough. Directories are deleted in a similar manner using <code>rmdir</code>.</p>
+
+<pre><code class="language-bash">ls
+rmdir Documents
+rmdir files
+ls
+</code></pre>
+
+<pre><code class="language-output">files Documents
+rmdir: failed to remove `files/': Directory not empty
+files
+</code></pre>
+
+<p>What happened? As it turns out, <code>rmdir</code> is unable to remove directories that have stuff in them. To delete a directory and everything inside it, we will use a special variant of <code>rm</code>, <code>rm -rf &lt;directory&gt;</code>. This is probably the scariest command on UNIX- it will force delete a directory and all of its contents without prompting. <strong>ALWAYS</strong> double check your typing before using it&hellip; if you leave out the arguments, it will attempt to delete everything on your file system that you have permission to delete. So when deleting directories be very, very careful.</p>
+
+<blockquote>
+<h2 id="what-happens-when-you-use-rm-rf-accidentally">What happens when you use <code>rm -rf</code> accidentally</h2>
+
+<p>Steam is a major online sales platform for PC videogames with over 125 million users. In 2015, it generated over 3.5 billion dollars in sales. Despite this, it hasn&rsquo;t always had the most stable or error-free code.</p>
+
+<p>In January 2015, user kevyin on GitHub reported that Steam&rsquo;s Linux client had deleted every file on his computer. It turned out that one of the Steam programmers had added the following line: <code>rm -rf &quot;$STEAMROOT/&quot;*</code>. Due to the way that Steam was set up, the variable <code>$STEAMROOT</code> was never initialized, meaning the statement evaluated to <code>rm -rf /*</code>. This coding error in the Linux client meant that Steam recursively deleted every single file when run in certain scenarios (including connected external hard drives). Moral of the story: <strong>be very careful</strong> when using rm -rf!</p>
+</blockquote>
+
+<h2 id="practice-problem-looking-at-files">Practice problem - looking at files</h2>
+
+<p>Sometimes it&rsquo;s not practical to read an entire file with <code>cat</code>- the file might be way too large, take a long time to open, or maybe we want to only look at a certain part of the file. As an example, we are going to look at a large and complex file type used in bioinformatics- a .gtf file. The GTF2 format is commonly used to describe the location of genetic features in a genome.</p>
+
+<p>Let&rsquo;s grab and unpack an example file for us to use with <code>wget</code> (<code>wget &lt;link&gt;</code> downloads a file from a link):</p>
+
+<pre><code class="language-bash">wget ftp://ftp.ensembl.org/pub/release-77/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP5.77.gtf.gz
+gunzip Drosophila_melanogaster.BDGP5.77.gtf.gz
+</code></pre>
+
+<blockquote>
+<h2 id="unzipping-files">Unzipping files</h2>
+
+<p>We just unzipped a .gz file for this example. What if we run into other file formats that we need to unzip? Just use the handy reference below:</p>
+
+<ul>
+<li><code>gunzip</code> unzips .gz files</li>
+<li><code>unzip</code> unzips .zip files</li>
+<li><code>unrar</code> unzips .rar files</li>
+<li><code>tar -xzf</code> unzips .tar.gz files</li>
+<li><code>tar -xjf</code> unzips .tar.bz2 files</li>
+</ul>
+</blockquote>
+
+<p>We just downloaded every annotated feature in the <em>Drosophila melanogaster</em> genome. It&rsquo;s a huge file- what happens if we run <code>cat</code> on it? (Press <code>Ctrl + C</code> to stop it).</p>
+
+<p>So, <code>cat</code> really sucks when reading big files. What are the alternatives? Try all of these out and see which ones you like best!</p>
+
+<ul>
+<li><p><code>head &lt;file&gt;</code> - Print the top 10 lines in a file to the console. You can control the number of lines you see with <code>-n [numberOfLines]</code>.</p></li>
+
+<li><p><code>tail &lt;file&gt;</code> - Same as <code>head</code>, but prints the last five lines in a file to the console.</p></li>
+
+<li><p><code>more &lt;file&gt;</code> - Opens a file and display as much as possible on-screen. You can scroll with <code>Enter</code> or the arrow keys on your keyboard. Press <code>q</code> to close the viewer. Everything that you&rsquo;ve looked at remains on screen.</p></li>
+
+<li><p><code>less &lt;file&gt;</code> - Identical to <code>more</code>, except what you&rsquo;ve looked at get&rsquo;s hidden once you close <code>less</code> with <code>q</code>. Remember, <code>less</code> is <code>more</code>.</p></li>
+</ul>
+
+
+
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+	<div class="sphinxsidebarwrapper">
+		<p class="logo">
+			<a href="https://haschmi.github.io/2017-07-31-queens-bash/">
+				<img class="logo" src="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" alt="Logo"/>
+				<h1 class="logo logo-name">The bash Shell</h1>
+			</a>
+		</p>
+		
+		<p class="blurb">A crash course</p>
+
+		
+
+	
+
+	
+
+	
+		
+
+		
+
+<h3>Navigation</h3>
+<ul>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/intro/">Introduction</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/navigation/">Navigation and exploration</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/files/">Handling files</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/piping/">Redirection and piping</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/scripts/">Scripts</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/remote/">Using remote systems</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/reference/">Quick Summary</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/">The bash Shell (main page)</a>
+	</li>
+	
+</ul>
+
+
+		<h3>Related Topics</h3>
+<ul>
+  <li><a href="https://haschmi.github.io/2017-07-31-queens-bash/">Documentation overview</a><ul>
+  
+  
+</ul>
+
+	</div>
+</div>
+<div class="clearer"></div>
+</div>
+			<div class="footer">
+	&copy; 2017 Hartmut Schmider / Jeff Stafford / Software Carpentry
+	|
+	Powered by <a href="http://gohugo.io/">Hugo 0.25.1</a>
+	&amp; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+	
+</div>
+
+
+
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="A crash course">
+	<meta name="generator" content="Hugo 0.25.1" />
+	
+	<title>Using remote systems &mdash; The bash Shell</title>
+	
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" type="image/x-icon"/>
+</head>
+
+	<body role="document">
+		<div class="document">
+			<div class="documentwrapper">
+				<div class="bodywrapper">
+					<div class="body" role="main">
+						
+	<h1>Using remote systems</h1>
+	
+	
+
+<h2 id="learning-objectives">Learning Objectives</h2>
+
+<ul>
+<li>Learn how to set up a shell script for job submission</li>
+<li>Learn how to select a cluster to run software on</li>
+<li>What is $PATH?</li>
+<li>Submit a simple job to the scheduler</li>
+<li>Learn how to transfer files to and from your computer with sftp</li>
+</ul>
+
+<p>At this point, we have learned all of the basics of using the shell. These skills will get you far on a normal UNIX system like OSX and most flavors of Linux. However, the system we are currently connected to is very different from a typical Linux install and handles big jobs somewhat differently.</p>
+
+<p>Our system has a special &ldquo;login&rdquo; node that users can pretty much do whatever on, and a whole bunch of &ldquo;production&rdquo; nodes meant to do the actual work. Each node is essentially a different Linux computer, each with its own set of processors and memory. Although it&rsquo;s entirely possible to write a shell script to do stuff and then run it on the login node (which we&rsquo;ve been doing so far), you won&rsquo;t have access to the same resources as you would on the production nodes (and it&rsquo;s not considered very polite to other users!). The login nodes are primarily for submitting jobs, retrieving data, short tests, and compiling software.</p>
+
+<p>We will need to make several modifications to the shell scripts we have been writing in order to get them to run on the production nodes. Specifically, we will need to format our scripts for use by Sun Grid Engine, which is the job scheduler used on the CAC clusters. Although the job schedulers differ between computing organizations, the general concepts remain the same. What we are going to do is add some special commands to tell Sun Grid Engine exactly what to do with our script and what kind of resources we will need. This allows the cluster to move your job to nodes where resources are available and have your scripts play nice with others&rsquo;.</p>
+
+<h2 id="about-schedulers">About Schedulers</h2>
+
+<p>The scheduler discussed here is &ldquo;Sun Grid Engine&rdquo; (SGE) which until recently was the one used on CAC systems. The syntax used here is quite similar to some other common work load schedulers such as &ldquo;PBS&rdquo;.
+SGE uses a set of special comments in each shell script to pass instructions to the scheduler. Each instruction is prefaced with #$, and are generally placed near the top of the script.
+Let&rsquo;s learn a couple of these <code>#$</code> instructions. Note that you don&rsquo;t need to memorize these or even use all of them - what they do is specified on our wiki at <a href="http://wiki.hpcvl.org/index.php/FAQ:SGE">http://wiki.hpcvl.org/index.php/FAQ:SGE</a>. There is another useful reference of SGE commands at <a href="https://kb.iu.edu/d/avgl">https://kb.iu.edu/d/avgl</a>.</p>
+
+<ul>
+<li><code>#$ -S /bin/bash</code> - Specify our shell to SGE.</li>
+<li><code>#$ -cwd</code> - Tell SGE to start the job in the working directory that our job was submitted from.</li>
+<li><code>#$ -V</code> - pass all of our environment variables (any shell variable we&rsquo;ve set in our current session) through to the job.</li>
+<li><code>#$ -N</code> - Assign an english name to our job (instead of just the numeric ID).</li>
+<li><code>#$ -o &lt;someFile&gt;</code> - Write <code>stdout</code> to a file. I usually just use something like <code>#$ -o $JOB_ID.o</code> so that every run of the same script has a unique output file.</li>
+<li><code>#$ -e &lt;someFile&gt;</code> - Same as <code>-o</code>, but for <code>stderr</code>.</li>
+<li><code>#$ -M hpcxxxx@localhost</code> - Specify an email address where the job scheduler can email your (generally hpcxxxx@localhost). On the next line, add something like <code>#$ -m be</code> for the scheduler to email you at the <strong>b</strong>eginning or <strong>e</strong>nd**** respectively.</li>
+<li><code>#$ -q abaqus.q</code> and <code>#$ -l qname=abaqus.q</code> ensure that your job will be scheduled on the SW (Linux cluster).</li>
+<li><code>#$ -pe shm.pe X</code> - Ask for &ldquo;X&rdquo; number of processors for your job.</li>
+<li><code>#$ -l mf=XG</code> - Ask for &ldquo;X&rdquo; gigabytes of memory for your job. It&rsquo;s generally a good idea to do this if you need more than 5 gigabytes.</li>
+</ul>
+
+<p>That&rsquo;s a lot to take in, isn&rsquo;t it? Let&rsquo;s just create a &ldquo;template job&rdquo;, which we can simply copy and edit for later job submissions.</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+# stuff you'll probably never want to change
+#$ -S /bin/bash
+#$ -cwd
+#$ -V
+#$ -M yourUserName@localhost
+#$ -m be
+#$ -q abaqus.q
+#$ -l qname=abaqus.q
+
+echo &quot;The actual commands for your job go here.&quot;
+</code></pre>
+
+<p>Let&rsquo;s save this as <code>template.sh</code></p>
+
+<p>We can submit this job and have it get run with <code>qsub template.sh</code>. It will print out the <code>$JOB_ID</code> and tell you the job is submitted. Try this now.
+If we&rsquo;re super fast, we can see what jobs of ours are running with <code>qstat -u ourUserName</code>. Our job may actually complete before we have the chance to run this, since <code>echo</code> should finish more or less instantaneously (if this happens we won&rsquo;t see any output).
+We can delete a job using <code>qdel &lt;JOB_ID&gt;</code>, where <code>JOB_ID</code> is simply the job number we saw with <code>qsub</code> or <code>qstat</code>.</p>
+
+<h2 id="what-is-path-and-how-do-we-modify-it">What is $PATH, and how do we modify it?</h2>
+
+<p>When running our scripts before, we always had to specify the absolute path to our scripts (remember all that <code>./demo.sh</code> stuff from earlier?). Why did we have to do that for our script, whereas normal UNIX commands like <code>ls</code> or <code>cd</code> did not? This is due to a special shell variable called <code>$PATH</code>.</p>
+
+<p>What is <code>$PATH</code>, exactly?</p>
+
+<pre><code class="language-bash">echo $PATH
+</code></pre>
+
+<pre><code class="language-output">/opt/n1ge6/bin/lx24-amd64:/usr/sbin:/sbin:/usr/bin:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/local/sbin
+</code></pre>
+
+<p><code>$PATH</code> is a colon-delimited list of directories. Whenever you run <em>any command whatsoever</em> without specifying its path, your computer searches the directories on <code>$PATH</code> and runs what it finds. If the computer does not find a command on <code>$PATH</code>, it gives you the <code>-bash: xxxxx: command not found</code> error.</p>
+
+<p>We often want to use software that&rsquo;s not on our <code>$PATH</code>. There are several ways of doing this:</p>
+
+<ul>
+<li><p><strong>Specify the relative/absolute path to your script or executable</strong> - As an example, if you had a program called <code>dostuff</code> installed in your home directory somewhere that you wanted to use, you could do so in your script with <code>~/path/dostuff</code> or <code>./dostuff</code> (if your script started in that directory).</p></li>
+
+<li><p><strong>Use preintalled software</strong> - We&rsquo;ve installed a lot of extra software that&rsquo;s available as <code>usepackage</code> entries. To see what&rsquo;s available, type <code>use -l</code>. You&rsquo;ll see a bunch of entries that look like <code>blast - Blast current version</code>. To use this entry, just add <code>use blast</code> to your script. You can then call <code>blast</code> as if it were on your <code>$PATH</code> (you can try typing <code>blastn</code> now).</p></li>
+
+<li><p><strong>Modify <code>$PATH</code> directly</strong> - <code>$PATH</code> is just a list of directories separated by a colon. You can easily add a directory to this with a command like <code>PATH=${PATH}:/directory/you/want/to/add</code>. Note that using the <code>#$ -V</code> option in your scripts will pass your current <code>$PATH</code> to your job.</p></li>
+</ul>
+
+<h2 id="connecting-to-external-computers-with-ssh">Connecting to external computers with <code>ssh</code></h2>
+
+<p>We actually already did this at the beginning of the lesson to connect to the CAC network. I will give a better overview of what we did earlier. <code>ssh</code> connects you to an external computer and let you use it as if it were your own.</p>
+
+<p>This is how you connect to another computer with <code>ssh</code>:</p>
+
+<pre><code class="language-bash">ssh yourUserName@someInternetAddressOrIP
+</code></pre>
+
+<p>To connect to the Centre for Advanced Computing, the command changes to:</p>
+
+<pre><code class="language-bash">ssh hpcXXXX@sfnode0.hpcvl.queensu.ca
+# or using IP
+ssh hpcXXXX@130.15.59.64
+</code></pre>
+
+<p>After ssh-ing to <code>sfnode0</code> and entering your password, you will be connected to the M9000 system (Solaris). You will usually want to use the SW system instead (Linux). To use the Linux cluster, <code>ssh</code> to the linux login node with <code>ssh swlogin1</code>. Note that all files are shared between both systems.</p>
+
+<p>One helpful tip is to always use <code>ssh -X</code> instead of simply <code>ssh</code>. The <code>-X</code> option enables X-forwarding. In plain English, this means that any pop-up windows you create on the remote machine are passed to your computer screen as well.</p>
+
+<p>To close an <code>ssh</code> connection, simply type <code>exit</code>.</p>
+
+<h2 id="transferring-files-to-and-from-cac-using-sftp">Transferring files to and from CAC using <code>sftp</code></h2>
+
+<p>So, say at the end of the day we&rsquo;ve done some work on the cluster. Now we want to take our files off of the cluster. We are going to do this using <code>sftp</code> (Secure File Transfer Protocol). <code>sftp</code> is a lot like <code>ssh</code> (what we are currently connected to the cluster with), only with a smaller list of commands we can use for transferring files.</p>
+
+<p>Open up a new terminal window. Note that people on Windows should immediately type in <code>cd MyDocuments</code> to get into their <code>My Documents</code> folder on Windows.</p>
+
+<p>Get an example file that you want to upload in a directory on your computer. It can be literally anything. In terminal/MobaXterm, <code>cd</code> to that directory.</p>
+
+<p>Now let&rsquo;s connect to the cluster with <code>sftp</code> to transfer files.</p>
+
+<pre><code class="language-bash">sftp hpcxxxx@sfnode0.hpcvl.queensu.ca
+</code></pre>
+
+<p>Once you login, you should see a prompt with something like:</p>
+
+<pre><code class="language-output">Connected to sfnode0.hpcvl.queensu.ca.
+sftp&gt;
+</code></pre>
+
+<p><code>sftp</code> is very similar to the <code>bash</code> shell we get with <code>ssh</code>. To see a list of possible commands, simply type <code>help</code>.</p>
+
+<pre><code class="language-bash">help
+</code></pre>
+
+<pre><code class="language-output">Available commands:
+bye                                Quit sftp
+cd path                            Change remote directory to 'path'
+chgrp grp path                     Change group of file 'path' to 'grp'
+chmod mode path                    Change permissions of file 'path' to 'mode'
+chown own path                     Change owner of file 'path' to 'own'
+df [-hi] [path]                    Display statistics for current directory or
+                                   filesystem containing 'path'
+exit                               Quit sftp
+get [-Ppr] remote [local]          Download file
+reget remote [local]               Resume download file
+reput [local] remote               Resume upload file
+help                               Display this help text
+
+[snip to save screen space]
+</code></pre>
+
+<p>You&rsquo;ll see a lot of old, familiar commands like <code>cd</code> and <code>ls</code>, along with a few new ones. Note that a lot of these commands make reference to <code>local</code> and <code>remote</code> computers. We are actually connected to two computers at the same time: our own (at the directory where we called <code>sftp</code>), and a remote (at our home directory on <code>sfnode0</code>). A lot of our old commands now have two versions: a remote one, and a local one (usally prefixed with <code>l</code>). Let&rsquo;s try a few of these out to get the hang of it.</p>
+
+<p>Important <code>sftp</code> commands (used the same way as before!):</p>
+
+<ul>
+<li><p><code>pwd</code> / <code>lpwd</code>: Print the remote working directory / our local working directory.</p></li>
+
+<li><p><code>cd</code> / <code>lcd</code>: Change remote working directory / local working directory.</p></li>
+
+<li><p><code>ls</code> / <code>lls</code>: List remote/local files.</p></li>
+
+<li><p><code>mkdir</code> / <code>lmkdir</code>: Create a remote / local directory</p></li>
+
+<li><p><code>put &lt;localFile&gt;</code>: Moves a file from your local working directory to the remote working directory. Can put multiple files by using <code>*</code> (example: <code>put *.txt</code>).</p></li>
+
+<li><p><code>get &lt;remoteFile&gt;</code>: &ldquo;Gets&rdquo; a file from the remote working directory and downloads it to your local working directory.</p></li>
+
+<li><p><code>bye</code> / <code>exit</code>: Either of these commands will quit your <code>sftp</code> session.</p></li>
+</ul>
+
+
+
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+	<div class="sphinxsidebarwrapper">
+		<p class="logo">
+			<a href="https://haschmi.github.io/2017-07-31-queens-bash/">
+				<img class="logo" src="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" alt="Logo"/>
+				<h1 class="logo logo-name">The bash Shell</h1>
+			</a>
+		</p>
+		
+		<p class="blurb">A crash course</p>
+
+		
+
+	
+
+	
+
+	
+		
+
+		
+
+<h3>Navigation</h3>
+<ul>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/intro/">Introduction</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/navigation/">Navigation and exploration</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/files/">Handling files</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/piping/">Redirection and piping</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/scripts/">Scripts</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/remote/">Using remote systems</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/reference/">Quick Summary</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/">The bash Shell (main page)</a>
+	</li>
+	
+</ul>
+
+
+		<h3>Related Topics</h3>
+<ul>
+  <li><a href="https://haschmi.github.io/2017-07-31-queens-bash/">Documentation overview</a><ul>
+  
+  
+</ul>
+
+	</div>
+</div>
+<div class="clearer"></div>
+</div>
+			<div class="footer">
+	&copy; 2017 Hartmut Schmider / Jeff Stafford / Software Carpentry
+	|
+	Powered by <a href="http://gohugo.io/">Hugo 0.25.1</a>
+	&amp; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+	
+</div>
+
+
+
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

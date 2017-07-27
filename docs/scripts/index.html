@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="A crash course">
+	<meta name="generator" content="Hugo 0.25.1" />
+	
+	<title>Scripts &mdash; The bash Shell</title>
+	
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" type="image/x-icon"/>
+</head>
+
+	<body role="document">
+		<div class="document">
+			<div class="documentwrapper">
+				<div class="bodywrapper">
+					<div class="body" role="main">
+						
+	<h1>Scripts</h1>
+	
+	
+
+<h2 id="learning-objectives">Learning Objectives</h2>
+
+<ul>
+<li>Learn what a script is</li>
+<li>Write simple shell scripts</li>
+<li>Understand and manipulate UNIX permissions</li>
+<li>What is a comment?</li>
+<li>Understand shell variables and how to use them</li>
+<li>Write a simple for loop</li>
+</ul>
+
+<p>We now know a whole bunch of UNIX commands. Wouldn&rsquo;t it be great if we could save certain commands so that we could run them later or not have to type them out again? As it turns out, this is extremely easy to do. Saving a list of commands to a file is called a &ldquo;shell script&rdquo;. These shell scripts can be run whenever we want, and are a great way to automate our work.</p>
+
+<p>So how do we write a shell script, exactly? It turns out we can do this with a simple text editor. Start editing a file called &ldquo;demo.sh&rdquo; (<code>nano demo.sh</code>). The &ldquo;.sh&rdquo; is simply the standard file extension for shell scripts that people use.</p>
+
+<p>Our shell script will have two parts:</p>
+
+<ul>
+<li><p>On the very first line, add <code>#!/bin/bash</code>. The <code>#!</code> (pronounced &ldquo;hash-bang&rdquo;) tells our computer what program to run our script with. In this case, we are telling it to run our script with our command-line shell (what we&rsquo;ve been doing everything in so far). If we wanted our script to be run with something else, like Python, we could add <code>#!/usr/bin/python</code></p></li>
+
+<li><p>Now, anywhere below the first line, add <code>echo &quot;Our script worked!&quot;</code>. When our script runs, <code>echo</code> will happily print out <code>Our script worked!</code>.</p></li>
+</ul>
+
+<p>Our file should now look like this:</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+echo &quot;Our script worked!&quot;
+</code></pre>
+
+<p>Ready to run our program? There&rsquo;s one last thing we need to do. Before a file can be run, it needs &ldquo;permission&rdquo; to run. Let&rsquo;s look at our file&rsquo;s permissions with <code>ls -l</code> (remember this from earlier?).</p>
+
+<pre><code class="language-bash">ls -l
+</code></pre>
+
+<pre><code class="language-output">-rw-r--r--. 1 hpcxxxx hpcgyyyy        39 Jan 27 10:45 demo.sh
+-rw-r-----. 1 hpcxxxx hpcgyyyy    721242 Jan 25 11:09 dmel_unique_protein_isoforms_fb_2016_01.tsv
+-rw-r--r--. 1 hpcxxxx hpcgyyyy 159401627 Jan 20 14:32 Drosophila_melanogaster.BDGP5.77.gtf
+drwxr-xr-x. 2 hpcxxxx hpcgyyyy        18 Jan 25 13:53 fastq
+-rw-r-----. 1 hpcxxxx hpcgyyyy  56654230 Jan 25 11:09 fb_synonym_fb_2016_01.tsv
+-rw-r-----. 1 hpcxxxx hpcgyyyy   1830516 Jan 25 11:09 gene_association.fb.gz
+-rw-r--r--. 1 hpcxxxx hpcgyyyy        15 Jan 25 13:56 test.txt
+-rw-r--r--. 1 hpcxxxx hpcgyyyy       270 Jan 25 14:40 word_counts.txt
+</code></pre>
+
+<p>That&rsquo;s a huge amount of output. Let&rsquo;s see if we can understand what it is, working left to right.</p>
+
+<ul>
+<li><p><strong>1st column - Permissions:</strong> On the very left side, there is a string of the characters <code>d</code>, <code>r</code>, <code>w</code>, <code>x</code>, and <code>-</code>. The <code>d</code> simply indicates if something is a directory (there is a <code>-</code> in that spot if it is not a directory). The other <code>r</code>, <code>w</code>, <code>x</code> bits indicates permission to <strong>R</strong>ead <strong>W</strong>rite and e<strong>X</strong>ecute a file.**** There are three columns of <code>rwx</code> permissions following the spot for <code>d</code>. If a user is missing a permission to do something, it&rsquo;s indicated by a <code>-</code>.</p>
+
+<ul>
+<li>The first column of <code>rwx</code> are the permissions that the owner has (the owner is indicated by hpcxxxx in the next column).</li>
+<li>The second set of <code>rwx</code>s are permissions that other members of the owner&rsquo;s group share (indicated by hpcgyyyy).</li>
+<li>The third set of <code>rwx</code>s are permissions that anyone else with access to this computer can do with a file.</li>
+</ul></li>
+
+<li><p><strong>2nd column - Owner:</strong> This is the username of the user who owns the file. Their permissions are indicated in the first permissions column.</p></li>
+
+<li><p><strong>3rd column - Group:</strong> This is the user group of the user who owns the file. Members of this user group have permissions indicated in the second permissions column.</p></li>
+
+<li><p><strong>4th column - Size of file:</strong> This is simply the size of a file in bytes, or the number of files/subdirectories if we are looking at a directory.</p></li>
+
+<li><p><strong>5th column - Date last modified:</strong> This is the last date the file was modified.</p></li>
+
+<li><p><strong>6th column - Filename:</strong> Pretty self explanatory- this is the filename.</p></li>
+</ul>
+
+<p>So how do we change permissions? As I mentioned earlier, we need permission to execute our script.</p>
+
+<p>Changing permissions is done with <code>chmod</code>. To add executable permissions for all users we could use this:</p>
+
+<pre><code class="language-bash">chmod +x demo.sh
+ls -l
+</code></pre>
+
+<pre><code class="language-output">-rwxr-xr-x. 1 hpcxxxx hpcgyyyy        39 Jan 27 10:45 demo.sh
+-rw-r-----. 1 hpcxxxx hpcgyyyy    721242 Jan 25 11:09 dmel_unique_protein_isoforms_fb_2016_01.tsv
+-rw-r--r--. 1 hpcxxxx hpcgyyyy 159401627 Jan 20 14:32 Drosophila_melanogaster.BDGP5.77.gtf
+drwxr-xr-x. 2 hpcxxxx hpcgyyyy        18 Jan 25 13:53 fastq
+-rw-r-----. 1 hpcxxxx hpcgyyyy  56654230 Jan 25 11:09 fb_synonym_fb_2016_01.tsv
+-rw-r-----. 1 hpcxxxx hpcgyyyy   1830516 Jan 25 11:09 gene_association.fb.gz
+-rw-r--r--. 1 hpcxxxx hpcgyyyy        15 Jan 25 13:56 test.txt
+-rw-r--r--. 1 hpcxxxx hpcgyyyy       270 Jan 25 14:40 word_counts.txt
+</code></pre>
+
+<p>Now that we have executable permissions for that file, we can run it. To run a script that we wrote ourselves, we need to specify the full path to the file, followed by the filename. We could do this one of two ways: either with our absolute path <code>/home/hpcxxxx/demo.sh</code>, or with the relative path <code>./demo.sh</code>.</p>
+
+<pre><code class="language-bash">./demo.sh
+</code></pre>
+
+<pre><code class="language-output">Our script worked!
+</code></pre>
+
+<p>Fantastic, we&rsquo;ve written our first program! Before we go any further, let&rsquo;s learn how to take notes inside our program using comments. A comment is indicated by the <code>#</code> character, followed by whatever we want. Comments do not get run. Let&rsquo;s try out some comments in the console, then add one to our script!</p>
+
+<pre><code class="language-bash"># This wont show anything
+</code></pre>
+
+<p>Now lets try adding this to our script with <code>nano</code>. Edit your script to look something like this:</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+# This is a comment... they are nice for making notes!
+echo &quot;Our script worked!&quot;
+</code></pre>
+
+<p>When we run our script, the output should be unchanged from before!</p>
+
+<hr />
+
+<h2 id="shell-variables">Shell variables</h2>
+
+<p>One important concept that we&rsquo;ll need to cover are shell variables. Variables are a great way of saving information under a name you can access later. In programming languages like Python and R, variables can store pretty much anything you can think of. In the shell, they usually just store text. The best way to understand how they work is to see them in action.</p>
+
+<p>To set a variable, simply type in a name containing only letters, numbers, and underscores, followed by an <code>=</code> and whatever you want to put in the variable. Shell variable names are typically uppercase by convention.</p>
+
+<pre><code class="language-bash">VAR=&quot;This is our variable&quot;
+</code></pre>
+
+<p>To use a variable, prefix its name with a <code>$</code> sign. Note that if we want to simply check what a variable is, we should use echo (or else the shell will try to run the contents of a variable).</p>
+
+<pre><code class="language-bash">echo $VAR
+</code></pre>
+
+<pre><code class="language-output">This is our variable
+</code></pre>
+
+<p>Let&rsquo;s try setting a variable in our script and then recalling its value as part of a command. We&rsquo;re going to make it so our script runs <code>wc -l</code> on whichever file we specify with <code>FILE</code>.</p>
+
+<p>Our script:</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+# set our variable to the name of our GTF file
+FILE=Drosophila_melanogaster.BDGP5.77.gtf
+
+# call wc -l on our file
+wc -l $FILE
+</code></pre>
+
+<pre><code class="language-bash">./demo.sh
+</code></pre>
+
+<pre><code class="language-output">471308 Drosophila_melanogaster.BDGP5.77.gtf
+</code></pre>
+
+<p>What if we wanted to do our little <code>wc -l</code> script on other files without having to change <code>$FILE</code> every time we want to use it? There is actually a special shell variable we can use in scripts that allows us to use arguments in our scripts (arguments are extra information that we can pass to our script, like the <code>-l</code> in <code>wc -l</code>).</p>
+
+<p>To use the first argument to a script, simply use <code>$1</code> (the second argument is <code>$2</code>, and so on). Let&rsquo;s change our script to run <code>wc -l</code> on <code>$1</code> instead of <code>$FILE</code>. Note that we can also pass all of the arguments using <code>$@</code> (not going to use it in this lesson, but it&rsquo;s something to be aware of).</p>
+
+<p>Our script:</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+# call wc -l on our first argument
+wc -l $1
+</code></pre>
+
+<pre><code class="language-bash">./demo.sh fb_synonym_fb_2016_01.tsv
+</code></pre>
+
+<pre><code class="language-output">1304914 fb_synonym_fb_2016_01.tsv
+</code></pre>
+
+<p>Nice! One thing to be aware of when using variables: they are all treated as pure text. How do we save the output of an actual command like <code>ls -l</code>?</p>
+
+<p>A demonstration of what doesn&rsquo;t work:</p>
+
+<pre><code class="language-bash">TEST=ls -l
+</code></pre>
+
+<pre><code class="language-output">-bash: -l: command not found
+</code></pre>
+
+<p>What does work:</p>
+
+<pre><code class="language-bash">TEST=$(ls -l)
+echo $TEST
+</code></pre>
+
+<pre><code class="language-output">total 214132 -rwxr-xr-x. 1 hpc3293 hpcgtest 57 Feb 1 12:20 demo.sh -rw-r-----. 1 hpc3293 hpcgtest 721242 Jan 25 11:09 dmel_unique_protein_isoforms_fb_2016_01.tsv -rw-r--r--. 1 hpc3293 hpcgtest 159401627 Jan 20 14:32 Drosophila_melanogaster.BDGP5.77.gtf drwxr-xr-x. 2 hpc3293 hpcgtest 18 Jan 25 13:53 fastq -rw-r-----. 1 hpc3293 hpcgtest 56654230 Jan 25 11:09 fb_synonym_fb_2016_01.tsv -rw-r-----. 1 hpc3293 hpcgtest 1830516 Jan 25 11:09 gene_association.fb.gz -rw-r--r--. 1 hpc3293 hpcgtest 15 Jan 25 13:56 test.txt -rw-r--r--. 1 hpc3293 hpcgtest 270 Jan 25 14:40 word_counts.txt
+</code></pre>
+
+<p>Note that everything got printed on the same line. This is a feature, not a bug, as it allows us to use $(commands) inside lines of script without triggering line breaks (which would end our line of code and execute it prematurely).</p>
+
+<hr />
+
+<h2 id="loops">Loops</h2>
+
+<p>To end our lesson on scripts, we are going to learn how to write a simple for-loop. This will let us do the same string of commands on every file in a directory (or other stuff of that nature).</p>
+
+<p>for-loops generally have the following syntax:</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+for VAR in first second third
+do
+    echo $VAR
+done
+</code></pre>
+
+<p>When a for-loop gets run, the loop will run once for everything following the word <code>in</code>. In each iteration, the variable <code>$VAR</code> is set to a particular value for that iteration. In this case it will be set to <code>first</code> during the first iteration, <code>second</code> on the second, and so on. During each iteration, the code between <code>do</code> and <code>done</code> is performed.</p>
+
+<p>Let&rsquo;s run the script we just wrote (I saved mine as <code>loop.sh</code>).</p>
+
+<pre><code class="language-bash">chmod +x loop.sh
+./loop.sh
+</code></pre>
+
+<pre><code class="language-output">first
+second
+third
+</code></pre>
+
+<p>What if we wanted to loop over a shell variable, such as every file in the current directory? Shell variables work perfectly in for-loops.</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+FILES=$(ls)
+for VAR in $FILES
+do
+        echo $VAR
+done
+</code></pre>
+
+<pre><code class="language-output">demo.sh
+dmel_unique_protein_isoforms_fb_2016_01.tsv
+Drosophila_melanogaster.BDGP5.77.gtf
+fastq
+fb_synonym_fb_2016_01.tsv
+gene_association.fb.gz
+loop.sh
+test.txt
+word_counts.txt
+</code></pre>
+
+<p>There&rsquo;s actually even a shortcut to run on all files of a particular type, say all .tsv files:</p>
+
+<pre><code class="language-bash">#!/bin/bash
+
+for VAR in *.tsv
+do
+        echo $VAR
+done
+</code></pre>
+
+<pre><code class="language-output">dmel_unique_protein_isoforms_fb_2016_01.tsv
+fb_synonym_fb_2016_01.tsv
+</code></pre>
+
+<blockquote>
+<h2 id="writing-our-own-script-and-loops">Writing our own script and loops</h2>
+
+<p><code>cd</code> to our <code>fastq</code> directory from earlier and write a loop to print off the name and first read (top 4 lines) of every fastq file in that directory.</p>
+
+<p>Is there a way to only run the loop on fastq files ending in <code>_1.fastq</code>?</p>
+
+<h2 id="concatenating-variables">Concatenating variables</h2>
+
+<p>Concatenating (i.e. mashing together) variables is quite easy to do. Simply add whatever you want to concatenate to the beginning or end of the shell variable after enclosing it in <code>{}</code> characters.</p>
+
+<pre><code class="language-bash">FILE=stuff.txt
+echo ${FILE}.processed
+</code></pre>
+
+<pre><code class="language-output">stuff.txt.processed
+</code></pre>
+
+<p>Can you write a script that prints off the name of every file in a directory with &ldquo;.example&rdquo; added to it?</p>
+
+<h2 id="tricks-for-working-with-file-extensions">Tricks for working with file extensions</h2>
+
+<p>Working with file extensions can be tough sometimes. Here are a couple examples that demonstrate how to retrieve various parts of a filename. You&rsquo;re not required to memorize these or anything, although they come in useful from time to time.</p>
+
+<pre><code class="language-bash">FILE=&quot;example.tar.gz&quot;
+echo &quot;${FILE%%.*}&quot;
+example
+echo &quot;${FILE%.*}&quot;
+example.tar
+echo &quot;${FILE#*.}&quot;
+tar.gz
+echo &quot;${FILE##*.}&quot;
+gz
+</code></pre>
+
+<h2 id="special-permissions">Special permissions</h2>
+
+<p>What if we want to give different sets of users different permissions. <code>chmod</code> actually accepts special numeric codes instead of stuff like <code>chmod +x</code>. The numeric codes are as follows: read = 4, write = 2, execute = 1. For each user we will assign permissions based on the sum of these permissions (must be between 7 and 0).</p>
+
+<p>Let&rsquo;s make an example file and give everyone permission to do everything with it.</p>
+
+<pre><code class="language-bash">touch example
+ls -l example
+chmod 777 example
+ls -l example
+</code></pre>
+
+<p>How might we give ourselves permission to do everything with a file, but allow no one else to do anything with it.</p>
+</blockquote>
+
+
+
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+	<div class="sphinxsidebarwrapper">
+		<p class="logo">
+			<a href="https://haschmi.github.io/2017-07-31-queens-bash/">
+				<img class="logo" src="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" alt="Logo"/>
+				<h1 class="logo logo-name">The bash Shell</h1>
+			</a>
+		</p>
+		
+		<p class="blurb">A crash course</p>
+
+		
+
+	
+
+	
+
+	
+		
+
+		
+
+<h3>Navigation</h3>
+<ul>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/intro/">Introduction</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/navigation/">Navigation and exploration</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/files/">Handling files</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/piping/">Redirection and piping</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/scripts/">Scripts</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/remote/">Using remote systems</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/reference/">Quick Summary</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/">The bash Shell (main page)</a>
+	</li>
+	
+</ul>
+
+
+		<h3>Related Topics</h3>
+<ul>
+  <li><a href="https://haschmi.github.io/2017-07-31-queens-bash/">Documentation overview</a><ul>
+  
+  
+</ul>
+
+	</div>
+</div>
+<div class="clearer"></div>
+</div>
+			<div class="footer">
+	&copy; 2017 Hartmut Schmider / Jeff Stafford / Software Carpentry
+	|
+	Powered by <a href="http://gohugo.io/">Hugo 0.25.1</a>
+	&amp; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+	
+</div>
+
+
+
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head lang="en-us">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+	<meta name="description" content="A crash course">
+	<meta name="generator" content="Hugo 0.25.1" />
+	
+	<title>Redirection and piping &mdash; The bash Shell</title>
+	
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/alabaster.css" type="text/css" />
+	<link rel="stylesheet" href="https://haschmi.github.io/2017-07-31-queens-bash/css/highlight.css" type="text/css" />
+
+	
+
+	<link rel="shortcut icon" href="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" type="image/x-icon"/>
+</head>
+
+	<body role="document">
+		<div class="document">
+			<div class="documentwrapper">
+				<div class="bodywrapper">
+					<div class="body" role="main">
+						
+	<h1>Redirection and piping</h1>
+	
+	
+
+<blockquote>
+<h2 id="learning-objectives">Learning Objectives</h2>
+
+<ul>
+<li>Redirect a command&rsquo;s output to a file.</li>
+<li>Process a file instead of keyboard input using redirection.</li>
+<li>Construct command pipelines with two or more stages.</li>
+<li>Explain what usually happens if a program or pipeline isn&rsquo;t given any input to process.</li>
+</ul>
+</blockquote>
+
+<p>Now that we know most of the basic UNIX commands, we are going to explore some more advanced features. The first of these features is the wildcard <code>*</code>. In our examples before, we&rsquo;ve done things to files one at a time and otherwise had to specify things explicitly. The <code>*</code> character lets us speed things up and do things across multiple files.</p>
+
+<p>Ever wanted to move, delete, or just do &ldquo;something&rdquo; to all files of a certain type in a directory? <code>*</code> lets you do that, by taking the place of one or more characters in a piece of text. So <code>*.txt</code> would be equivalent to all .txt files in a directory for instance. <code>*</code> by itself means all files. Let&rsquo;s use some example data to see what I mean.</p>
+
+<pre><code class="language-bash">wget &lt;LINK&gt;.wildcard_example.tar.gz
+tar -xzf wildcard_example.tar.gz
+ls
+</code></pre>
+
+<pre><code class="language-output"> dmel_unique_protein_isoforms_fb_2016_01.tsv  SRR307026_2.fastq
+ Drosophila_melanogaster.BDGP5.77.gtf         SRR307027_1.fastq
+ fb_synonym_fb_2016_01.tsv                    SRR307027_2.fastq
+ gene_association.fb                          SRR307028_1.fastq
+ SRR307023_1.fastq                            SRR307028_2.fastq
+ SRR307023_2.fastq                            SRR307029_1.fastq
+ SRR307024_1.fastq                            SRR307029_2.fastq
+ SRR307024_2.fastq                            SRR307030_1.fastq
+ SRR307025_1.fastq                            SRR307030_2.fastq
+ SRR307025_2.fastq                            wildcard_examples.tar.gz
+ SRR307026_1.fastq
+</code></pre>
+
+<p>Now we have a whole bunch of example files in our directory. For this example we are going to learn a new command that tells us how long a file is: <code>wc</code>. <code>wc -l &lt;file&gt;</code> tells us the length of a file in lines.</p>
+
+<pre><code class="language-bash">wc -l Drosophila_melanogaster.BDGP5.77.gtf
+</code></pre>
+
+<pre><code class="language-output">471308
+</code></pre>
+
+<p>Interesting, there are 471308 lines in our <code>Drosophila_melanogaster.BDGP5.77.gtf</code> file. What if we wanted to run <code>wc -l</code> on every .fastq file? This is where <code>*</code> comes in really handy.</p>
+
+<pre><code class="language-bash">wc -l *.fastq
+</code></pre>
+
+<pre><code class="language-output"> 20000 SRR307023_1.fastq
+ 20000 SRR307023_2.fastq
+ 20000 SRR307024_1.fastq
+ 20000 SRR307024_2.fastq
+ 20000 SRR307025_1.fastq
+ 20000 SRR307025_2.fastq
+ 20000 SRR307026_1.fastq
+ 20000 SRR307026_2.fastq
+ 20000 SRR307027_1.fastq
+ 20000 SRR307027_2.fastq
+ 20000 SRR307028_1.fastq
+ 20000 SRR307028_2.fastq
+ 20000 SRR307029_1.fastq
+ 20000 SRR307029_2.fastq
+ 20000 SRR307030_1.fastq
+ 20000 SRR307030_2.fastq
+320000 total
+</code></pre>
+
+<p>That was easy. What if we wanted to do the same command, except on every file in the directory? A nice trick to keep in mind is that <code>*</code> by itself matches <em>every</em> file.</p>
+
+<pre><code class="language-bash">wc -l *
+</code></pre>
+
+<pre><code class="language-output"> 22129 dmel_unique_protein_isoforms_fb_2016_01.tsv
+471308 Drosophila_melanogaster.BDGP5.77.gtf
+1304914 fb_synonym_fb_2016_01.tsv
+106290 gene_association.fb
+ 20000 SRR307023_1.fastq
+ 20000 SRR307023_2.fastq
+ 20000 SRR307024_1.fastq
+ 20000 SRR307024_2.fastq
+ 20000 SRR307025_1.fastq
+ 20000 SRR307025_2.fastq
+ 20000 SRR307026_1.fastq
+ 20000 SRR307026_2.fastq
+ 20000 SRR307027_1.fastq
+ 20000 SRR307027_2.fastq
+ 20000 SRR307028_1.fastq
+ 20000 SRR307028_2.fastq
+ 20000 SRR307029_1.fastq
+ 20000 SRR307029_2.fastq
+ 20000 SRR307030_1.fastq
+ 20000 SRR307030_2.fastq
+2317119 total
+</code></pre>
+
+<blockquote>
+<h2 id="multiple-wildcards">Multiple wildcards</h2>
+
+<p>You can even use multiple <code>*</code>s at a time. How would you run <code>wc -l</code> on every file with &ldquo;fb&rdquo; in it?</p>
+
+<h2 id="using-other-commands">Using other commands</h2>
+
+<p>Now let&rsquo;s try cleaning up our working directory a bit. Create a folder called &ldquo;fastq&rdquo; and move all of our .fastq files there.</p>
+</blockquote>
+
+<hr />
+
+<h2 id="redirecting-output">Redirecting output</h2>
+
+<p>Each of the commands we&rsquo;ve used so far does only a very small amount of stuff. However, it&rsquo;s extremely easy to chain these simple UNIX commands together to do complicated stuff!</p>
+
+<p>For our first foray into &ldquo;piping&rdquo;, or redirecting, these commands we are going to use the <code>&gt;</code> operator to write output to a file. When using <code>&gt;</code>, whatever is on the left of the <code>&gt;</code> is written to the filename you specify on the right of the arrow. The actual syntax looks like <code>command &gt; filename</code>.</p>
+
+<p>Let&rsquo;s try several basic usages of <code>&gt;</code>. <code>echo</code> simply prints back, or echoes whatever you type after it.</p>
+
+<pre><code class="language-bash">echo &quot;this is a test&quot;
+echo &quot;this is a test&quot; &gt; test.txt
+ls
+cat test.txt
+</code></pre>
+
+<pre><code class="language-output">this is a test
+
+dmel_unique_protein_isoforms_fb_2016_01.tsv  fb_synonym_fb_2016_01.tsv
+Drosophila_melanogaster.BDGP5.77.gtf         gene_association.fb
+fastq                                        test.txt
+
+this is a test
+</code></pre>
+
+<p>Awesome, let&rsquo;s try that with a more complicated command, like <code>wc -l</code>.</p>
+
+<pre><code class="language-bash">wc -l * &gt; word_counts.txt
+cat word_counts.txt
+</code></pre>
+
+<pre><code class="language-callout">wc: fastq: Is a directory
+
+22129 dmel_unique_protein_isoforms_fb_2016_01.tsv
+471308 Drosophila_melanogaster.BDGP5.77.gtf
+    0 fastq
+1304914 fb_synonym_fb_2016_01.tsv
+106290 gene_association.fb
+    1 test.txt
+1904642 total
+</code></pre>
+
+<p>Notice how we still got some output to the console even though we &ldquo;piped&rdquo; the output to a file. Our expected output still went to the file, but how did the error message get skipped and not go to the file?</p>
+
+<p>This phenomena is an artifact of how UNIX systems are built. There are 3 input/output streams for every UNIX program you will run: <code>stdin</code>, <code>stdout</code>, and <code>stderr</code>.</p>
+
+<p>Let&rsquo;s dissect these three streams of input/output in the command we just ran: <code>wc -l * &gt; word_counts.txt</code></p>
+
+<ul>
+<li><p><code>stdin</code> is the input to a program. In the command we just ran, <code>stdin</code> is represented by <code>*</code>, which is simply every filename in our current directory.</p></li>
+
+<li><p><code>stdout</code> contains the actual, expected output. In this case, <code>&gt;</code> redirected <code>stdout</code> to the file <code>word_counts.txt</code>.</p></li>
+
+<li><p><code>stderr</code> typically contains error messages and other information that doesn&rsquo;t quite fit into the category of &ldquo;output&rdquo;. If we insist on redirecting both <code>stdout</code> and <code>stderr</code> to the same file we would use <code>&amp;&gt;</code> instead of <code>&gt;</code>.</p></li>
+</ul>
+
+<p>Knowing what we know now, let&rsquo;s try re-running the command, and send all of the output (including the error message) to the same <code>word_counts.txt</code> files as before.</p>
+
+<pre><code class="language-bash">wc -l * &amp;&gt; word_counts.txt
+</code></pre>
+
+<p>Notice how there was no output to the console that time. Let&rsquo;s check that the error message went to the file like we specified.</p>
+
+<pre><code class="language-bash">cat word_counts.txt
+</code></pre>
+
+<pre><code class="language-output">22129 dmel_unique_protein_isoforms_fb_2016_01.tsv
+471308 Drosophila_melanogaster.BDGP5.77.gtf
+wc: fastq: Is a directory
+    0 fastq
+1304914 fb_synonym_fb_2016_01.tsv
+106290 gene_association.fb
+    1 test.txt
+    7 word_counts.txt
+1904649 total
+</code></pre>
+
+<p>Success! The <code>wc: fastq: Is a directory</code> error message was written to the file. Also, note how the file was silently overwritten by directing output to the same place as before. Sometimes this is not the behavior we want. How do we append (add) to a file instead of overwriting it?</p>
+
+<p>Appending to a file is done the same was as redirecting output. However, instead of <code>&gt;</code>, we will use <code>&gt;&gt;</code>.</p>
+
+<pre><code class="language-bash">echo &quot;We want to add this sentence to the end of our file&quot; &gt;&gt; word_counts.txt
+cat word_counts.txt
+</code></pre>
+
+<pre><code class="language-output">22129 dmel_unique_protein_isoforms_fb_2016_01.tsv
+471308 Drosophila_melanogaster.BDGP5.77.gtf
+    0 fastq
+1304914 fb_synonym_fb_2016_01.tsv
+106290 gene_association.fb
+    1 test.txt
+1904642 total
+We want to add this sentence to the end of our file
+</code></pre>
+
+<hr />
+
+<h2 id="chaining-commands-together">Chaining commands together</h2>
+
+<p>We now know how to redirect <code>stdout</code> and <code>stderr</code> to files. We can actually take this a step further and redirect output (<code>stdout</code>) from one command to serve as the input (<code>stdin</code>) for the next. To do this, we use the <code>|</code> (pipe) operator.</p>
+
+<p><code>grep</code> is an extremely useful command. It finds things for us within files. Basic usage (there are a lot of options for more clever things, see the <code>man</code> page) uses the syntax <code>grep &lt;whatToFind&gt; &lt;fileToSearch&gt;</code>. Let&rsquo;s use <code>grep</code> to find all of the entries pertaining to the <code>Act5C</code> gene in <em>Drosophila melanogaster</em>.</p>
+
+<pre><code class="language-bash">grep Act5C Drosophila_melanogaster.BDGP5.77.gtf
+</code></pre>
+
+<p>The output is nearly unintelligible since there is so much of it. Let&rsquo;s send the output of that <code>grep</code> command to <code>head</code> so we can just take a peek at the first line.</p>
+
+<pre><code class="language-bash">grep Act5C Drosophila_melanogaster.BDGP5.77.gtf | head -n 1
+</code></pre>
+
+<pre><code class="language-output">X       FlyBase gene    5794894 5799261 .       +       .       gene_id &quot;FBgn0000042&quot;; gene_version &quot;5&quot;; gene_name &quot;Act5C&quot;; gene_source &quot;FlyBase&quot;; gene_biotype &quot;protein_coding&quot;;
+</code></pre>
+
+<p>Nice work, we&rsquo;ve successfully send the output from one program to another. Let&rsquo;s try counting the number of entries for Act5C with <code>wc -l</code>.</p>
+
+<pre><code class="language-bash">grep Act5C Drosophila_melanogaster.BDGP5.77.gtf | wc -l
+</code></pre>
+
+<pre><code class="language-output">37
+</code></pre>
+
+<p>Note that this is just the same as redirecting output to a file, then reading the number of lines from that file.</p>
+
+<blockquote>
+<h2 id="writing-commands-using-pipes">Writing commands using pipes</h2>
+
+<p>How many files are there in the &ldquo;fastq&rdquo; directory we made earlier? (Use the shell to do this.)</p>
+
+<h2 id="reading-from-compressed-files">Reading from compressed files</h2>
+
+<p>Let&rsquo;s compress one of our files using gzip.</p>
+
+<pre><code class="language-bash">gzip gene_association.fb
+</code></pre>
+
+<p><code>gunzip -c</code> prints decompressed output to the console instead of decompressing the file. Using <code>gunzip -c</code>, can you write a command to take a look at the top few lines of the gene_association.fb.gz file (without decompressing the file itself)?</p>
+</blockquote>
+
+
+
+						
+					</div>
+				</div>
+			</div>
+			
+			<div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+	<div class="sphinxsidebarwrapper">
+		<p class="logo">
+			<a href="https://haschmi.github.io/2017-07-31-queens-bash/">
+				<img class="logo" src="https://haschmi.github.io/2017-07-31-queens-bash/favicon.ico" alt="Logo"/>
+				<h1 class="logo logo-name">The bash Shell</h1>
+			</a>
+		</p>
+		
+		<p class="blurb">A crash course</p>
+
+		
+
+	
+
+	
+
+	
+		
+
+		
+
+<h3>Navigation</h3>
+<ul>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/intro/">Introduction</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/navigation/">Navigation and exploration</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/files/">Handling files</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/piping/">Redirection and piping</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/scripts/">Scripts</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/remote/">Using remote systems</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/reference/">Quick Summary</a>
+	</li>
+	
+	<li class="toctree-l1">
+		<a class="reference internal" href="/2017-07-31-queens-bash/">The bash Shell (main page)</a>
+	</li>
+	
+</ul>
+
+
+		<h3>Related Topics</h3>
+<ul>
+  <li><a href="https://haschmi.github.io/2017-07-31-queens-bash/">Documentation overview</a><ul>
+  
+  
+</ul>
+
+	</div>
+</div>
+<div class="clearer"></div>
+</div>
+			<div class="footer">
+	&copy; 2017 Hartmut Schmider / Jeff Stafford / Software Carpentry
+	|
+	Powered by <a href="http://gohugo.io/">Hugo 0.25.1</a>
+	&amp; <a href="https://github.com/digitalcraftsman/hugo-alabaster-theme">Alabaster</a>
+	
+</div>
+
+
+
+
+			
+
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/highlight.min.js"></script>
+			<script>hljs.initHighlightingOnLoad();</script>
+			
+
+			
+		</div>
+	</body>
+</html>
