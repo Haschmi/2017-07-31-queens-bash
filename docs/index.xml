@@ -18,7 +18,7 @@
       
       <guid>https://haschmi.github.io/2017-07-31-queens-bash/intro/</guid>
       <description>Learning Objectives  Explain how the shell relates to the keyboard, the screen, the operating system, and users&amp;rsquo; programs. Explain when and why command-line interfaces should be used instead of graphical interfaces.  At a high level, computers do four things:
- run programs store data communicate with each other interact with us  Until very recently, the only way to interact with a computer was by typing input and receiving printed text output.</description>
+ run programs (applications) store data communicate with each other interact with us  Until very recently, the only way to interact with a computer was by typing input and receiving printed text output.</description>
     </item>
     
     <item>
